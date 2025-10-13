@@ -122,7 +122,7 @@ public class QuestionService {
         gameState.setSelectedDifficulty(difficulty);
         gameState.getUsedQuestionIds().clear();
         saveGameState();
-    }
+    } 
 
     public void correctAnswer() {
         gameState.setScore(gameState.getScore() + 10);
