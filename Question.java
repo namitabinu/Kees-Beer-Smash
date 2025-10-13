@@ -26,7 +26,7 @@ public class Question implements Serializable {
         Collections.shuffle(allAnswers);
         return allAnswers;
     }
-
+ 
     // Getters
     public int getId() {
         return id;

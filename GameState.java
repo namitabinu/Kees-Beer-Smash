@@ -30,7 +30,7 @@ public class GameState implements Serializable {
     public int getSelectedDifficulty() {
         return selectedDifficulty;
     }
-
+ 
     public void setSelectedDifficulty(int difficulty) {
         this.selectedDifficulty = difficulty;
     }
