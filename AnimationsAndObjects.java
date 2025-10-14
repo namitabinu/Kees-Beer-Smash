@@ -1,5 +1,10 @@
-import javax.swing.*;
 import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.event.KeyEvent;
+import javax.swing.*;
+/**
+ * This class handles all animations and drawings of objects in the game.
+ */
 
 public class AnimationsAndObjects extends JPanel{
     private BallCalculations ballCalculations;
@@ -9,12 +14,40 @@ public class AnimationsAndObjects extends JPanel{
     private Color platformColor = Color.decode("#FF0000");
     private Image slingshotImage;
 
-    //Constructor
+    /**
+     * A constructor to initialize the panel and load the images and background.
+     */
     public AnimationsAndObjects(BallCalculations ballCalculations) {
         this.ballCalculations = ballCalculations;
         this.setPreferredSize(new Dimension(800, 600));
         backgroundImage = new ImageIcon("Pub_Interior_Image.jpeg").getImage();
         slingshotImage = new ImageIcon("Slingshot.png").getImage();
+
+        setupKeyControls();
+    }
+
+    private void setupKeyControls() {
+        this.setFocusable(true);
+        this.requestFocusInWindow();
+        this.addKeyListener(new java.awt.event.KeyAdapter() {
+            @Override
+            public void keyPressed(java.awt.event.KeyEvent e) {
+                switch (e.getKeyCode()) {
+                    case KeyEvent.VK_UP:
+                        ballCalculations.pullBack(0, -5);
+                        repaint();
+                        break;
+                    case KeyEvent.VK_DOWN:
+                        ballCalculations.pullBack(0, 5);
+                        repaint();
+                        break;
+                    case KeyEvent.VK_SPACE:
+                        ballCalculations.launchBall(); 
+                        repaint();
+                        break;
+                }
+            }
+        });
     }
 
     @Override
@@ -45,7 +78,24 @@ public class AnimationsAndObjects extends JPanel{
             int slingshotX = 150; //X position of the slingshot
             int slingshotY = getHeight() - platformHeight - 300; //Y position of the slingshot
             g.drawImage(slingshotImage, slingshotX, slingshotY, 100, 150, this);
+
+            drawSlingshotBand(g, slingshotX, slingshotY);
         }
+    }
+
+    private void drawSlingshotBand(Graphics g, int slingshotX, int slingshotY) {
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setColor(Color.BLACK);
+        g2d.setStroke(new BasicStroke(5)); //thickness of the band
+        double ballX = ballCalculations.getX();
+        double ballY = ballCalculations.getY();
+
+        int leftBandX = slingshotX + 20; //Left band attachment point
+        int rightBandX = slingshotX + 80; //Right band attachment point
+        int bandY = slingshotY + 30; //Band attachment height
+
+        g2d.drawLine(leftBandX, bandY, (int) ballX, (int) ballY);
+        g2d.drawLine(rightBandX, bandY, (int) ballX, (int) ballY);
     }
     
     private void drawBall(Graphics g) {
