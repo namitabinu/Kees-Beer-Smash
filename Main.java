@@ -1,8 +1,10 @@
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import javax.swing.*;
 
-
+/**
+ * The Main class serves as the entry point for the Pub Trivia Game application.
+ */
 public class Main {
     
     public static void main(String[] args) {
@@ -18,7 +20,7 @@ public class Main {
         JFrame frame = new JFrame("Pub Trivia Game");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(panel);
-        frame.pack();
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setVisible(true);
 
         Timer timer = new Timer(16, new ActionListener() {
