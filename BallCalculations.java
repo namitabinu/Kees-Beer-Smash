@@ -21,6 +21,9 @@ public class BallCalculations {
     private int screenWidth;
     private int screenHeight;
     private boolean isLaunched = false;
+    private boolean isPulledBack = false;
+    private double originalX;
+    private double originalY;
 
     // Constructor to initialize the ball's model
     /**
@@ -35,6 +38,8 @@ public class BallCalculations {
         double radius) {
         this.x = x;
         this.y = y;
+        this.originalX = x;
+        this.originalY = y;
         this.velocityX = velocityX;
         this.velocityY = velocityY;
         this.radius = radius;
@@ -64,10 +69,31 @@ public class BallCalculations {
         checkBoundaries();
     }
 
-    public void launchBall(double velX, double velY) {
-        this.velocityX = velX;
-        this.velocityY = velY;
-        this.isLaunched = true;
+    public void pullBack(double deltaX, double deltaY) {
+        if (!isLaunched) {
+            x += deltaX;
+            y += deltaY;
+            isPulledBack = true;
+        }
+    }
+
+    public void launchBall() {
+        if (isPulledBack && !isLaunched) {
+            // Calculate velocity based on displacement from original position
+            calculateLaunchVelocity();
+            isLaunched = true;
+            isPulledBack = false;
+        }
+    }
+
+    private void calculateLaunchVelocity() {
+        // The further the ball is pulled back, the stronger the launch
+        double displacementX = originalX - x;
+        double displacementY = originalY - y;
+        double powerFactor = 0.3; // Adjust this value to control launch strength
+        
+        velocityX = displacementX * powerFactor;
+        velocityY = displacementY * powerFactor;
     }
 
     public boolean isLaunched() {
