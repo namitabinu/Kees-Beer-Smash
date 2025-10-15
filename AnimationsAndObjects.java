@@ -1,12 +1,11 @@
 import java.awt.*;
-import java.awt.BasicStroke;
 import java.awt.event.KeyEvent;
 import javax.swing.*;
 /**
  * This class handles all animations and drawings of objects in the game.
  */
 
-public class AnimationsAndObjects extends JPanel{
+public class AnimationsAndObjects extends JPanel {
     private BallCalculations ballCalculations;
     private Image backgroundImage;
     private int platformWidth = 500;
@@ -44,6 +43,8 @@ public class AnimationsAndObjects extends JPanel{
                     case KeyEvent.VK_SPACE:
                         ballCalculations.launchBall(); 
                         repaint();
+                        break;
+                    default:
                         break;
                 }
             }
@@ -87,19 +88,21 @@ public class AnimationsAndObjects extends JPanel{
         Graphics2D g2d = (Graphics2D) g;
         g2d.setColor(Color.BLACK);
         g2d.setStroke(new BasicStroke(5)); //thickness of the band
-        double ballX = ballCalculations.getX();
-        double ballY = ballCalculations.getY();
+        double targetX = ballCalculations.isLaunched() 
+                ? ballCalculations.getLaunchX() : ballCalculations.getX();
+        double targetY = ballCalculations.isLaunched() 
+                ? ballCalculations.getLaunchY() : ballCalculations.getY();
 
         int leftBandX = slingshotX + 20; //Left band attachment point
         int rightBandX = slingshotX + 80; //Right band attachment point
         int bandY = slingshotY + 30; //Band attachment height
 
-        g2d.drawLine(leftBandX, bandY, (int) ballX, (int) ballY);
-        g2d.drawLine(rightBandX, bandY, (int) ballX, (int) ballY);
+        g2d.drawLine(leftBandX, bandY, (int) targetX, (int) targetY);
+        g2d.drawLine(rightBandX, bandY, (int) targetX, (int) targetY);
     }
     
     private void drawBall(Graphics g) {
-        g.setColor(Color.ORANGE); //Sets the ball color to orange
+        g.setColor(Color.decode("#FF5C00")); //Sets the ball color to orange
         double x = ballCalculations.getX();
         double y = ballCalculations.getY();
         double radius = ballCalculations.getRadius();
