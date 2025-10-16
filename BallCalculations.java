@@ -1,6 +1,6 @@
-import javax.swing.*;
-import java.util.*;
 import java.awt.*;
+import java.util.*;
+import javax.swing.*;
 
 
 /** This is the code for all the calculations regarding the following:
@@ -17,13 +17,13 @@ public class BallCalculations {
     private double velocityX;
     private double velocityY;
     private double radius;
-    private Color color;
     private int screenWidth;
     private int screenHeight;
     private boolean isLaunched = false;
     private boolean isPulledBack = false;
-    private double originalX;
     private double originalY;
+    private double launchX;
+    private double launchY;
 
     // Constructor to initialize the ball's model
     /**
@@ -38,12 +38,10 @@ public class BallCalculations {
         double radius) {
         this.x = x;
         this.y = y;
-        this.originalX = x;
         this.originalY = y;
         this.velocityX = velocityX;
         this.velocityY = velocityY;
         this.radius = radius;
-        this.color = Color.ORANGE;
     }
 
     public double getX() {
@@ -62,7 +60,12 @@ public class BallCalculations {
         if (!isLaunched) {
             return;
         }
-        velocityY += 0.5; //Gravity
+        velocityY += 0.8; //Gravity
+
+        // Air resistance for damping
+        velocityX *= 0.999;
+        velocityY *= 0.998;
+
         x += velocityX;
         y += velocityY;
         
@@ -78,7 +81,9 @@ public class BallCalculations {
     }
 
     public void launchBall() {
-        if (isPulledBack && !isLaunched) {
+        if (!isLaunched) {
+            this.launchX = x;
+            this.launchY = y;
             // Calculate velocity based on displacement from original position
             calculateLaunchVelocity();
             isLaunched = true;
@@ -88,20 +93,20 @@ public class BallCalculations {
 
     private void calculateLaunchVelocity() {
         // The further the ball is pulled back, the stronger the launch
-        double displacementX = originalX - x;
         double displacementY = originalY - y;
-        double powerFactor = 0.3; // Adjust this value to control launch strength
+        double powerFactor = 0.7; // Controls the launch power
         
-        velocityX = 18.0;
+        // Minimum X velocity plus a slight boost for pulling back furhter
+        velocityX = 45.0 + (displacementY * 0.3);
         velocityY = displacementY * powerFactor;
     }
 
     public double getLaunchX() {
-        return originalX;
+        return launchX;
     }
 
     public double getLaunchY() {
-        return originalY;
+        return launchY;
     }
 
     public boolean isLaunched() {
@@ -115,11 +120,19 @@ public class BallCalculations {
 
     public void checkBoundaries() {
         if (x - radius < 0 || x + radius > screenWidth) {
-            velocityX = -velocityX; // Reverse X velocity
+            velocityX = -velocityX * 0.7; // Bounce with damping
         }
-        if (y - radius < 0 || y + radius > screenHeight) {
-            velocityY = -velocityY; // Reverse Y velocity
+        // When it hits the roof
+        if (y - radius < 0) {
+            y = radius;
+            velocityY = -velocityY * 0.8; //Damped bounce from the roof
+        }
+    
+        // Ground stops the ball (make it reset later)
+        if (y + radius > screenHeight) {
+            y = screenHeight - radius;
+            velocityX *= 0.8; // Reduces horizontal speed when hitting the ground
+            velocityY = 0;    // Stops the ball from bouncing (maybe change later)
         }
     }
-
 }
