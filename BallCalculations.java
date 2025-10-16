@@ -1,6 +1,3 @@
-import java.awt.*;
-import java.util.*;
-import javax.swing.*;
 
 
 /** This is the code for all the calculations regarding the following:
@@ -20,7 +17,6 @@ public class BallCalculations {
     private int screenWidth;
     private int screenHeight;
     private boolean isLaunched = false;
-    private boolean isPulledBack = false;
     private double originalY;
     private double launchX;
     private double launchY;
@@ -76,7 +72,6 @@ public class BallCalculations {
         if (!isLaunched) {
             x += deltaX;
             y += deltaY;
-            isPulledBack = true;
         }
     }
 
@@ -87,7 +82,6 @@ public class BallCalculations {
             // Calculate velocity based on displacement from original position
             calculateLaunchVelocity();
             isLaunched = true;
-            isPulledBack = false;
         }
     }
 
