@@ -92,8 +92,16 @@ public class BallCalculations {
         double displacementY = originalY - y;
         double powerFactor = 0.3; // Adjust this value to control launch strength
         
-        velocityX = displacementX * powerFactor;
+        velocityX = 18.0;
         velocityY = displacementY * powerFactor;
+    }
+
+    public double getLaunchX() {
+        return originalX;
+    }
+
+    public double getLaunchY() {
+        return originalY;
     }
 
     public boolean isLaunched() {
