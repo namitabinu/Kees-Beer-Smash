@@ -1,4 +1,5 @@
-
+import java.awt.Point;
+import java.util.ArrayList;
 
 /** This is the code for all the calculations regarding the following:
  * 1. The modelling of the ping pong ball.
@@ -20,6 +21,8 @@ public class BallCalculations {
     private double originalY;
     private double launchX;
     private double launchY;
+    public ArrayList<Point> trajectoryPoints; // Stores trajectory points
+    public boolean showTrajectory;
 
     // Constructor to initialize the ball's model
     /**
@@ -38,6 +41,8 @@ public class BallCalculations {
         this.velocityX = velocityX;
         this.velocityY = velocityY;
         this.radius = radius;
+        this.trajectoryPoints = new ArrayList<>();
+        this.showTrajectory = true;
     }
 
     public double getX() {
@@ -50,6 +55,14 @@ public class BallCalculations {
 
     public double getRadius() {
         return radius;
+    }
+
+    public ArrayList<Point> getTrajectoryPoints() {
+        return trajectoryPoints;
+    }
+
+    public boolean isShowTrajectory() {
+        return showTrajectory;
     }
 
     public void updatePosition() {
@@ -72,6 +85,40 @@ public class BallCalculations {
         if (!isLaunched) {
             x += deltaX;
             y += deltaY;
+
+            calculateTrajectory();
+            showTrajectory = true;
+        }
+    }
+
+    private void calculateTrajectory() {
+        trajectoryPoints = new ArrayList<>();
+
+        double displacementY = originalY - y;
+        double powerFactor = 0.7;
+        double predVelX = 45.0 + (displacementY * 0.3); //Predicted x velocity
+        double predVelY = displacementY * powerFactor; //Predicted y velocity
+        double predX = x;
+        double predY = y;
+ 
+
+        double timeStep = 0.5;
+        double maxTime = 45.0;
+        for (double t = 0; t < maxTime; t += timeStep) {
+            predVelY += 0.45 * 0.5; // Gravity effect (Fine tuned for accuracy)
+            predVelX *= Math.pow(0.999, timeStep / 0.1); // Air resistance
+            predVelY *= Math.pow(0.998, timeStep / 0.1); // Air resistance
+
+            predX += predVelX * timeStep;
+            predY += predVelY * timeStep;
+
+            trajectoryPoints.add(new Point((int) predX, (int) predY));
+
+            // Stop if it hits the ground
+            if (predY > screenHeight
+                    || predX < 0 || predX > screenWidth) {
+                break;
+            }
         }
     }
 
@@ -82,6 +129,7 @@ public class BallCalculations {
             // Calculate velocity based on displacement from original position
             calculateLaunchVelocity();
             isLaunched = true;
+            showTrajectory = false; // Hides trajectory after launch
         }
     }
 

@@ -64,7 +64,7 @@ public class AnimationsAndObjects extends JPanel {
         drawPlatform(g); //Draws the platform
         drawSlingshot(g); //Draws the slingshot
         drawBall(g); //Draws the ball
-
+        drawTrajectory(g); //Draws the trajectory
     }
 
     private void drawPlatform(Graphics g) {
@@ -111,5 +111,14 @@ public class AnimationsAndObjects extends JPanel {
         g.fillOval((int) (x - radius), (int) (y - radius), 
                    (int) (radius * 2), (int) (radius * 2));
         
+    }
+
+    private void drawTrajectory(Graphics g) {
+        if (ballCalculations.showTrajectory) {
+            g.setColor(Color.WHITE);
+            for (Point dot: ballCalculations.trajectoryPoints) {
+                g.fillOval(dot.x, dot.y, 8, 8);
+            }
+        }
     }
 }
