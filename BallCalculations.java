@@ -102,10 +102,10 @@ public class BallCalculations {
         double predY = y;
  
 
-        double timeStep = 0.5;
-        double maxTime = 45.0;
+        double timeStep = 1.1;
+        double maxTime = 50.0;
         for (double t = 0; t < maxTime; t += timeStep) {
-            predVelY += 0.45 * 0.5; // Gravity effect (Fine tuned for accuracy)
+            predVelY += 0.98 * 0.5; // Gravity effect (Fine tuned for accuracy)
             predVelX *= Math.pow(0.999, timeStep / 0.1); // Air resistance
             predVelY *= Math.pow(0.998, timeStep / 0.1); // Air resistance
 
