@@ -1,6 +1,9 @@
 import java.awt.*;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.event.*;
 import javax.swing.*;
+
 
 /**
  * The Main class serves as the entry point for the Pub Trivia Game application.
@@ -13,8 +16,12 @@ public class Main {
         double ballRadius = 30;
         double ballX = platformX + platformWidth / 2;
 
-        BallCalculations ballCalculations = new BallCalculations(ballX, 530, 0, 0, ballRadius);
-        AnimationsAndObjects panel = new AnimationsAndObjects(ballCalculations);
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int screenWidth = (int) screenSize.getWidth();
+        Targets target = new Targets(screenWidth, 300, 200, 250);
+        BallCalculations ballCalculations = new BallCalculations(ballX, 530, 0, 0, ballRadius, 
+                target);
+        AnimationsAndObjects panel = new AnimationsAndObjects(ballCalculations, target);
         
         JFrame frame = new JFrame("Pub Trivia Game");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

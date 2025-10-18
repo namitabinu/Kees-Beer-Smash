@@ -8,20 +8,23 @@ import javax.swing.*;
 public class AnimationsAndObjects extends JPanel {
     private BallCalculations ballCalculations;
     private Image backgroundImage;
+    private Targets target;
     private int platformWidth = 500;
     private int platformHeight = 100;
     private Color platformColor = Color.decode("#FF0000");
     private Image slingshotImage;
+    private Image cupImage;
 
     /**
      * A constructor to initialize the panel and load the images and background.
      */
-    public AnimationsAndObjects(BallCalculations ballCalculations) {
+    public AnimationsAndObjects(BallCalculations ballCalculations, Targets target) {
         this.ballCalculations = ballCalculations;
+        this.target = target;
         this.setPreferredSize(new Dimension(800, 600));
         backgroundImage = new ImageIcon("Pub_Interior_Image.jpeg").getImage();
         slingshotImage = new ImageIcon("Slingshot.png").getImage();
-
+        cupImage = new ImageIcon("Cup.png").getImage();
         setupKeyControls();
     }
 
@@ -64,7 +67,8 @@ public class AnimationsAndObjects extends JPanel {
         drawPlatform(g); //Draws the platform
         drawSlingshot(g); //Draws the slingshot
         drawBall(g); //Draws the ball
-
+        drawTrajectory(g); //Draws the trajectory
+        drawTargets(g); //Draws the targets
     }
 
     private void drawPlatform(Graphics g) {
@@ -111,5 +115,28 @@ public class AnimationsAndObjects extends JPanel {
         g.fillOval((int) (x - radius), (int) (y - radius), 
                    (int) (radius * 2), (int) (radius * 2));
         
+    }
+
+    private void drawTargets(Graphics g) {
+        int x = (int) target.getX();
+        int y = (int) target.getY();
+        int width = (int) target.getWidth();
+        int height = (int) target.getHeight();
+
+        if (cupImage != null) {
+            g.drawImage(cupImage, x, y, width, height, this);
+        } else {
+            g.setColor(Color.RED);
+            g.fillRect(x, y, width, height);
+        }
+    }
+
+    private void drawTrajectory(Graphics g) {
+        if (ballCalculations.showTrajectory) {
+            g.setColor(Color.WHITE);
+            for (Point dot: ballCalculations.trajectoryPoints) {
+                g.fillOval(dot.x, dot.y, 8, 8);
+            }
+        }
     }
 }
