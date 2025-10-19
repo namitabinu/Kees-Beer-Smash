@@ -23,7 +23,7 @@ public class BallCalculations {
     private double launchY;
     public ArrayList<Point> trajectoryPoints; // Stores trajectory points
     public boolean showTrajectory;
-    private Targets target;
+    private Targets[] targets;
 
     // Constructor to initialize the ball's model
     /**
@@ -35,14 +35,14 @@ public class BallCalculations {
      * @param radius Radius of the ball
      */
     public BallCalculations(double x, double y, double velocityX, double velocityY, 
-        double radius, Targets target) {
+        double radius, Targets[] targets) {
         this.x = x;
         this.y = y;
         this.originalY = y;
         this.velocityX = velocityX;
         this.velocityY = velocityY;
         this.radius = radius;
-        this.target = target;
+        this.targets = targets;
         this.trajectoryPoints = new ArrayList<>();
         this.showTrajectory = true;
     }
@@ -85,8 +85,12 @@ public class BallCalculations {
     }
 
     private void checkTargetCollision() {
-        if (target != null && target.checkCollision(x, y, radius)) {
-            System.out.println("Hit!");
+        if (targets != null) {
+            for (Targets target : targets) {
+                if (target.checkCollision(x, y, radius)) {
+                    System.out.println("Hit!");
+                }
+            }
         }
     }
 

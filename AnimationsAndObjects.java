@@ -8,7 +8,7 @@ import javax.swing.*;
 public class AnimationsAndObjects extends JPanel {
     private BallCalculations ballCalculations;
     private Image backgroundImage;
-    private Targets target;
+    private Targets[] targets;
     private int platformWidth = 500;
     private int platformHeight = 100;
     private Color platformColor = Color.decode("#FF0000");
@@ -18,9 +18,9 @@ public class AnimationsAndObjects extends JPanel {
     /**
      * A constructor to initialize the panel and load the images and background.
      */
-    public AnimationsAndObjects(BallCalculations ballCalculations, Targets target) {
+    public AnimationsAndObjects(BallCalculations ballCalculations, Targets[] targets) {
         this.ballCalculations = ballCalculations;
-        this.target = target;
+        this.targets = targets;
         this.setPreferredSize(new Dimension(800, 600));
         backgroundImage = new ImageIcon("Pub_Interior_Image.jpeg").getImage();
         slingshotImage = new ImageIcon("Slingshot.png").getImage();
@@ -118,17 +118,32 @@ public class AnimationsAndObjects extends JPanel {
     }
 
     private void drawTargets(Graphics g) {
-        int x = (int) target.getX();
-        int y = (int) target.getY();
-        int width = (int) target.getWidth();
-        int height = (int) target.getHeight();
-
-        if (cupImage != null) {
-            g.drawImage(cupImage, x, y, width, height, this);
-        } else {
-            g.setColor(Color.RED);
-            g.fillRect(x, y, width, height);
+        for (Targets target : targets) {
+            int x = (int) target.getX();
+            int y = (int) target.getY();
+            int width = (int) target.getWidth();
+            int height = (int) target.getHeight();
+        
+            if (cupImage != null) {
+                g.drawImage(cupImage, x, y, width, height, this);
+            } else {
+                g.setColor(Color.RED);
+                g.fillRect(x, y, width, height);
+            }
+            drawLetter(g, target, x, y, width, height);
         }
+    }
+
+    private void drawLetter(Graphics g, Targets target, int x, int y, int width, int height) {
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("Arial", Font.BOLD, 40));
+        FontMetrics fm = g.getFontMetrics();
+        String letter = target.getLetter();
+        int textWidth = fm.stringWidth(letter);
+        int textHeight = fm.getAscent();
+        int textX = x + (width - textWidth) / 2;
+        int textY = y + (height + textHeight) / 2 - 10;
+        g.drawString(letter, textX, textY);
     }
 
     private void drawTrajectory(Graphics g) {

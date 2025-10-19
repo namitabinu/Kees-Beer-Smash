@@ -6,14 +6,16 @@ public class Targets {
     private double width;
     private double height;
     private boolean isCorrect = false;
+    private String letter;
 
-    public Targets(double screenWidth, double targetY, double width, double height) {
+    public Targets(double screenWidth, double targetY, double width, double height, String letter) {
         this.width = width;
         this.height = height;
         this.x = screenWidth - width - 250;
         this.y = targetY;
+        this.letter = letter;
     }
-
+    //Getters
     public double getX() {
         return x;
     }
@@ -28,6 +30,9 @@ public class Targets {
     }
     public boolean isCorrect() {
         return isCorrect;
+    }
+    public String getLetter() {
+        return letter;
     }
 
     public boolean checkCollision(double ballX, double ballY, double ballRadius) {
