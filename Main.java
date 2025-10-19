@@ -18,10 +18,14 @@ public class Main {
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int screenWidth = (int) screenSize.getWidth();
-        Targets target = new Targets(screenWidth, 300, 200, 250);
+        Targets[] targets = new Targets[4];
+        targets[0] = new Targets(screenWidth, 700, 140, 180, "D");
+        targets[1] = new Targets(screenWidth - 250, 500, 140, 180, "C");
+        targets[2] = new Targets(screenWidth, 300, 140, 180, "B");
+        targets[3] = new Targets(screenWidth - 250, 100, 140, 180, "A");
         BallCalculations ballCalculations = new BallCalculations(ballX, 530, 0, 0, ballRadius, 
-                target);
-        AnimationsAndObjects panel = new AnimationsAndObjects(ballCalculations, target);
+                targets);
+        AnimationsAndObjects panel = new AnimationsAndObjects(ballCalculations, targets);
         
         JFrame frame = new JFrame("Pub Trivia Game");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
