@@ -18,12 +18,15 @@ public class BallCalculations {
     private int screenWidth;
     private int screenHeight;
     private boolean isLaunched = false;
+    private double originalX;
     private double originalY;
     private double launchX;
     private double launchY;
     public ArrayList<Point> trajectoryPoints; // Stores trajectory points
     public boolean showTrajectory;
     private Targets[] targets;
+    private boolean isReset = false;
+
 
     // Constructor to initialize the ball's model
     /**
@@ -38,6 +41,7 @@ public class BallCalculations {
         double radius, Targets[] targets) {
         this.x = x;
         this.y = y;
+        this.originalX = x;
         this.originalY = y;
         this.velocityX = velocityX;
         this.velocityY = velocityY;
@@ -57,6 +61,18 @@ public class BallCalculations {
 
     public double getRadius() {
         return radius;
+    }
+
+    public double getLaunchX() {
+        return launchX;
+    }
+
+    public double getLaunchY() {
+        return launchY;
+    }
+
+    public boolean isLaunched() {
+        return isLaunched;
     }
 
     public ArrayList<Point> getTrajectoryPoints() {
@@ -82,6 +98,10 @@ public class BallCalculations {
         
         checkBoundaries();
         checkTargetCollision();
+
+        if (shouldReset()) {
+            resetBall();
+        }
     }
 
     private void checkTargetCollision() {
@@ -156,21 +176,28 @@ public class BallCalculations {
         velocityY = displacementY * powerFactor;
     }
 
-    public double getLaunchX() {
-        return launchX;
-    }
-
-    public double getLaunchY() {
-        return launchY;
-    }
-
-    public boolean isLaunched() {
-        return isLaunched;
-    }
 
     public void setScreenSize(int width, int height) {
         this.screenWidth = width;
         this.screenHeight = height;
+    }
+
+    public boolean shouldReset() {
+        boolean tooSlow = Math.abs(velocityX) < 1.0 && Math.abs(velocityY) < 1.0
+                && isLaunched;
+        boolean hitGround = y + radius >= screenHeight && isLaunched;
+        return tooSlow || hitGround;
+    }
+
+    public void resetBall() {
+        this.x = originalX;
+        this.y = originalY;
+        this.velocityX = 0;
+        this.velocityY = 0;
+        this.isLaunched = false;
+        this.showTrajectory = true;
+        this.trajectoryPoints.clear();
+        calculateTrajectory();
     }
 
     public void checkBoundaries() {
