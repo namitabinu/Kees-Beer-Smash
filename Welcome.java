@@ -85,7 +85,7 @@ public class Welcome extends JFrame {
 
     private void startGame(String difficulty) {
         this.dispose();
-        Main.startGame(difficulty);
+        Main_two.startGame(difficulty);
     }
 
     public static void main(String[] args) {
@@ -94,3 +94,4 @@ public class Welcome extends JFrame {
         });
     }
 }
+
