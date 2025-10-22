@@ -15,7 +15,7 @@ public class Welcome extends JFrame {
         layeredPane.setPreferredSize(new Dimension(screenWidth, screenHeight));
 
         // Background panel
-        ImageIcon originalIcon = new ImageIcon("welcome page.png");
+        ImageIcon originalIcon = new ImageIcon("welcome_page.png");
         JPanel backgroundPanel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -27,9 +27,9 @@ public class Welcome extends JFrame {
         layeredPane.add(backgroundPanel, JLayeredPane.DEFAULT_LAYER);
 
         // Create transparent buttons, so buttons on image can be seen
-        JButton easyButton = createMinimalTransparentButton("EASY", 0.25);
-        JButton mediumButton = createMinimalTransparentButton("MEDIUM", 0.5);
-        JButton hardButton = createMinimalTransparentButton("HARD", 0.75);
+        JButton easyButton = createMinimalTransparentButton("EASY", 0.2685);
+        JButton mediumButton = createMinimalTransparentButton("MEDIUM", 0.455);
+        JButton hardButton = createMinimalTransparentButton("HARD", 0.6415);
 
         easyButton.addActionListener(e -> startGame("easy"));
         mediumButton.addActionListener(e -> startGame("medium"));
@@ -53,8 +53,8 @@ public class Welcome extends JFrame {
 
         int buttonWidth = screenWidth / 6;
         int buttonHeight = screenHeight / 12;
-        int x = (int) (screenWidth * xPosition) - (buttonWidth / 2);
-        int y = screenHeight * 2 / 3;
+        int x = (int) (screenWidth * xPosition) - (buttonWidth / 2) + (-200);
+        int y = screenHeight * 2 / 3 + 100 - 7;
 
         button.setBounds(x, y, buttonWidth, buttonHeight);
 
@@ -94,4 +94,3 @@ public class Welcome extends JFrame {
         });
     }
 }
-
