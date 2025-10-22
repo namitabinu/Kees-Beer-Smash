@@ -23,8 +23,8 @@ public class AnimationsAndObjects extends JPanel {
         this.targets = targets;
         this.setPreferredSize(new Dimension(800, 600));
         backgroundImage = new ImageIcon("Pub_Interior_Image.jpeg").getImage();
-        slingshotImage = new ImageIcon("Slingshot.png").getImage();
-        cupImage = new ImageIcon("Cup.png").getImage();
+        slingshotImage = new ImageIcon("sling.png").getImage();
+        cupImage = new ImageIcon("beer.png").getImage();
         setupKeyControls();
     }
 
