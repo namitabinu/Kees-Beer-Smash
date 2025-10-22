@@ -69,7 +69,7 @@ public class AnimationsAndObjects extends JPanel {
             g.fillRect(0, 0, getWidth(), getHeight());
         }
         ballCalculations.setScreenSize(getWidth(), getHeight()); // Sets screen size
-        drawPlatform(g); // Draws the platform
+        //drawPlatform(g); // Draws the platform
         drawSlingshot(g); // Draws the slingshot
         drawBall(g); // Draws the ball
         drawTrajectory(g); // Draws the trajectory
@@ -77,12 +77,12 @@ public class AnimationsAndObjects extends JPanel {
         drawBombs(g); // Draws the bombs
     }
 
-    private void drawPlatform(Graphics g) {
+    /* private void drawPlatform(Graphics g) {
         g.setColor(platformColor); // Sets the platform color to brown
         int platformX = 50;
         int platformY = getHeight() - 250; // Positions the platform near the bottom
         g.fillRect(platformX, platformY, platformWidth, platformHeight);
-    }
+    } */
 
     private void drawSlingshot(Graphics g) {
         if (slingshotImage != null) {
