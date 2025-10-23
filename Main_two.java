@@ -35,9 +35,9 @@ public class Main_two {
         //QuestionService questionService = new QuestionService();
 
         Targets[] bombs = new Targets[3];
-        bombs[0] = new Targets(screenWidth - 400, 400, 140, 150, "BOMB"); // Top-middle
-        bombs[1] = new Targets(screenWidth - 600, 600, 140, 150, "BOMB"); // Middle-left
-        bombs[2] = new Targets(screenWidth - 200, 200, 140, 150, "BOMB"); // Bottom-right
+        bombs[0] = new Targets(screenWidth - 400, 400, 100, 110, "BOMB"); // Top-middle
+        bombs[1] = new Targets(screenWidth - 600, 600, 100, 110, "BOMB"); // Middle-left
+        bombs[2] = new Targets(screenWidth - 200, 200, 100, 110, "BOMB"); // Bottom-right
 
         Targets[] targets = new Targets[4];
         targets[0] = new Targets(screenWidth, 700, 180, 230, "D");
