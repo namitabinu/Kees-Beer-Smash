@@ -50,6 +50,13 @@ public class Main_two {
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setVisible(true);
 
+        frame.addWindowListener (new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                panel.saveGame();
+            }
+        });
+
         Timer timer = new Timer(8, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
