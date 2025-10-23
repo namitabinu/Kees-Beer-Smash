@@ -6,7 +6,6 @@ import java.awt.event.KeyEvent;
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 
 /**
  * This class handles all animations and drawings of objects in the game.
@@ -232,10 +231,6 @@ public class AnimationsAndObjects extends JPanel {
         state.setBallVelocityY(ballCalculations.getVelocityY());
         state.setBallLaunched(ballCalculations.isLaunched());
 
-        // Save trajectory points
-        ArrayList<Point> trajectory = new ArrayList<>(ballCalculations.getTrajectoryPoints());
-        state.setBallTrajectory(trajectory);
-
         // Save target positions
         double[] targetX = new double[targets.length];
         double[] targetY = new double[targets.length];
@@ -269,13 +264,8 @@ public class AnimationsAndObjects extends JPanel {
         ballCalculations.setVelocity(state.getBallVelocityX(), state.getBallVelocityY());
         ballCalculations.setLaunched(state.isBallLaunched());
 
-        // Restore trajectory
-        ballCalculations.getTrajectoryPoints().clear();
-        if (state.getBallTrajectory() != null) {
-            ballCalculations.getTrajectoryPoints().addAll(state.getBallTrajectory());
-        }
         ballCalculations.showTrajectory = !state.isBallLaunched();
-
+        
         // Restore target positions
         double[] targetX = state.getTargetX();
         double[] targetY = state.getTargetY();
