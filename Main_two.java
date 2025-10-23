@@ -1,4 +1,5 @@
-import java.awt.*;
+
+//import java.awt.*;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.*;
@@ -7,7 +8,7 @@ import javax.swing.*;
 /**
  * The Main class serves as the entry point for the Pub Trivia Game application.
  */
-public class Main {
+public class Main_two {
 
     public static void main(String[] args) {
 
@@ -31,16 +32,21 @@ public class Main {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int screenWidth = (int) screenSize.getWidth();
         // Create QuestionService
-        QuestionService questionService = new QuestionService();
+        //QuestionService questionService = new QuestionService();
+
+        Targets[] bombs = new Targets[3];
+        bombs[0] = new Targets(screenWidth - 400, 400, 140, 150, "BOMB"); // Top-middle
+        bombs[1] = new Targets(screenWidth - 600, 600, 140, 150, "BOMB"); // Middle-left
+        bombs[2] = new Targets(screenWidth - 200, 200, 140, 150, "BOMB"); // Bottom-right
 
         Targets[] targets = new Targets[4];
-        targets[0] = new Targets(screenWidth, 700, 140, 180, "D");
-        targets[1] = new Targets(screenWidth - 250, 500, 140, 180, "C");
-        targets[2] = new Targets(screenWidth, 300, 140, 180, "B");
-        targets[3] = new Targets(screenWidth - 250, 100, 140, 180, "A");
+        targets[0] = new Targets(screenWidth, 700, 180, 230, "D");
+        targets[1] = new Targets(screenWidth - 250, 500, 180, 230, "C");
+        targets[2] = new Targets(screenWidth, 300, 180, 230, "B");
+        targets[3] = new Targets(screenWidth - 250, 100, 180, 230, "A");
         BallCalculations ballCalculations = new BallCalculations(ballX, 530, 0, 0, ballRadius,
-                targets);
-        AnimationsAndObjects panel = new AnimationsAndObjects(ballCalculations, targets, questionService);
+                targets, bombs);
+        AnimationsAndObjects panel = new AnimationsAndObjects(ballCalculations, targets, bombs, difficulty);
 
         JFrame frame = new JFrame("Pub Trivia Game - " + difficulty.toUpperCase() + " Mode");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -48,10 +54,11 @@ public class Main {
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setVisible(true);
 
-        Timer timer = new Timer(16, new ActionListener() {
+        Timer timer = new Timer(8, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ballCalculations.updatePosition();
+                ballCalculations.checkCollisions(panel); 
                 panel.repaint();
             }
         });

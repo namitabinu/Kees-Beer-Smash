@@ -1,10 +1,12 @@
 import java.awt.Point;
 import java.util.ArrayList;
 
-/** This is the code for all the calculations regarding the following:
+/**
+ * This is the code for all the calculations regarding the following:
  * 1. The modelling of the ping pong ball.
  * 2. The calculations of the ball's trajectory.
- * 3. The calculations of the ball's interaction with the targets and other objects.
+ * 3. The calculations of the ball's interaction with the targets and other
+ * objects.
  * 4. The calculation of the placement of the targets.
  * 
  */
@@ -25,20 +27,21 @@ public class BallCalculations {
     public ArrayList<Point> trajectoryPoints; // Stores trajectory points
     public boolean showTrajectory;
     private Targets[] targets;
+    private Targets[] bombs;
     private boolean isReset = false;
-
 
     // Constructor to initialize the ball's model
     /**
      * Constructor to initialize the ball's model.
-     * @param x X-coordinate of the ball
-     * @param y Y-coordinate of the ball
+     * 
+     * @param x         X-coordinate of the ball
+     * @param y         Y-coordinate of the ball
      * @param velocityX X-velocity of the ball
      * @param velocityY Y-velocity of the ball
-     * @param radius Radius of the ball
+     * @param radius    Radius of the ball
      */
-    public BallCalculations(double x, double y, double velocityX, double velocityY, 
-        double radius, Targets[] targets) {
+    public BallCalculations(double x, double y, double velocityX, double velocityY,
+            double radius, Targets[] targets, Targets[] bombs) {
         this.x = x;
         this.y = y;
         this.originalX = x;
@@ -47,6 +50,7 @@ public class BallCalculations {
         this.velocityY = velocityY;
         this.radius = radius;
         this.targets = targets;
+        this.bombs = bombs;
         this.trajectoryPoints = new ArrayList<>();
         this.showTrajectory = true;
     }
@@ -87,7 +91,7 @@ public class BallCalculations {
         if (!isLaunched) {
             return;
         }
-        velocityY += 0.8; //Gravity
+        velocityY += 0.8; // Gravity
 
         // Air resistance for damping
         velocityX *= 0.999;
@@ -95,20 +99,34 @@ public class BallCalculations {
 
         x += velocityX;
         y += velocityY;
-        
+
         checkBoundaries();
-        checkTargetCollision();
+        // checkTargetCollision();
 
         if (shouldReset()) {
             resetBall();
         }
     }
 
-    private void checkTargetCollision() {
+    public void checkCollisions(AnimationsAndObjects panel) {
+        // Check target collisions
         if (targets != null) {
             for (Targets target : targets) {
-                if (target.checkCollision(x, y, radius)) {
-                    System.out.println("Hit!");
+                if (target.checkCollision(x, y, radius) && !target.isHit()) {
+                    panel.targetHit();
+                    target.setHit(true);
+                    System.out.println("Target hit! +10 points");
+                }
+            }
+        }
+
+        // Check bomb collisions
+        if (bombs != null) {
+            for (Targets bomb : bombs) {
+                if (bomb.checkCollision(x, y, radius) && !bomb.isHit()) {
+                    panel.bombHit();
+                    bomb.setHit(true);
+                    System.out.println("Bomb hit! -5 points");
                 }
             }
         }
@@ -129,11 +147,10 @@ public class BallCalculations {
 
         double displacementY = originalY - y;
         double powerFactor = 0.7;
-        double predVelX = 45.0 + (displacementY * 0.3); //Predicted x velocity
-        double predVelY = displacementY * powerFactor; //Predicted y velocity
+        double predVelX = 45.0 + (displacementY * 0.3); // Predicted x velocity
+        double predVelY = displacementY * powerFactor; // Predicted y velocity
         double predX = x;
         double predY = y;
- 
 
         double timeStep = 1.1;
         double maxTime = 50.0;
@@ -170,12 +187,11 @@ public class BallCalculations {
         // The further the ball is pulled back, the stronger the launch
         double displacementY = originalY - y;
         double powerFactor = 0.7; // Controls the launch power
-        
+
         // Minimum X velocity plus a slight boost for pulling back furhter
         velocityX = 45.0 + (displacementY * 0.3);
         velocityY = displacementY * powerFactor;
     }
-
 
     public void setScreenSize(int width, int height) {
         this.screenWidth = width;
@@ -197,6 +213,21 @@ public class BallCalculations {
         this.isLaunched = false;
         this.showTrajectory = true;
         this.trajectoryPoints.clear();
+
+        // Resets hit status of ALL targets and bombs
+        if (targets != null) {
+            for (Targets target : targets) {
+                target.setHit(false);
+                System.out.println("Reset target: " + target.getLetter()); // Debug
+            }
+        }
+        if (bombs != null) {
+            for (Targets bomb : bombs) {
+                bomb.setHit(false);
+                System.out.println("Reset bomb"); // Debug
+            }
+        }
+
         calculateTrajectory();
     }
 
@@ -207,14 +238,14 @@ public class BallCalculations {
         // When it hits the roof
         if (y - radius < 0) {
             y = radius;
-            velocityY = -velocityY * 0.8; //Damped bounce from the roof
+            velocityY = -velocityY * 0.8; // Damped bounce from the roof
         }
-    
+
         // Ground stops the ball (make it reset later)
         if (y + radius > screenHeight) {
             y = screenHeight - radius;
             velocityX *= 0.8; // Reduces horizontal speed when hitting the ground
-            velocityY = 0;    // Stops the ball from bouncing (maybe change later)
+            velocityY = 0; // Stops the ball from bouncing (maybe change later)
         }
     }
 }
