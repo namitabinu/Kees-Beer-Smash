@@ -3,6 +3,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import javax.swing.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * This class handles all animations and drawings of objects in the game.
@@ -27,22 +30,24 @@ public class AnimationsAndObjects extends JPanel {
     private int timeRemaining;
     private Timer gameTimer;
     private String difficulty;
+    private GameStateManager gameStateManager;
 
     /**
      * A constructor to initialize the panel and load the images and background.
      */
-    public AnimationsAndObjects(BallCalculations ballCalculations, Targets[] targets, Targets[] bombs,
-            String difficulty) {
+    public AnimationsAndObjects(BallCalculations ballCalculations, Targets[] targets,
+            Targets[] bombs, String difficulty) {
         this.ballCalculations = ballCalculations;
         this.targets = targets;
         this.bombs = bombs;
         this.difficulty = difficulty;
         this.setPreferredSize(new Dimension(800, 600));
         this.setLayout(new BorderLayout()); // changed layout to BorderLayout
-        backgroundImage = new ImageIcon("Pub_Interior_Image.jpeg").getImage();
-        slingshotImage = new ImageIcon("sling.png").getImage();
-        cupImage = new ImageIcon("beer.png").getImage();
-        bombImage = new ImageIcon("bomb.png").getImage();
+        this.gameStateManager = new GameStateManager();
+        backgroundImage = new ImageIcon("Pictures/Pub_Interior_Image.jpeg").getImage();
+        slingshotImage = new ImageIcon("Pictures/sling.png").getImage();
+        cupImage = new ImageIcon("Pictures/beer.png").getImage();
+        bombImage = new ImageIcon("Pictures/bomb.png").getImage();
         setupLabels();
         setupKeyControls();
         initializeTimer();
@@ -168,6 +173,105 @@ public class AnimationsAndObjects extends JPanel {
         });
     }
 
+    public void saveGame() {
+        try {
+            GameState gameState = createGameState();
+            gameStateManager.saveGame(gameState);
+            
+            // Show confirmation
+            lastAction = "Game Saved!";
+            lastActionTime = System.currentTimeMillis();
+            updateScoreDisplay();
+            
+        } catch (IOException e) {
+            System.err.println("Failed to save game: " + e.getMessage());
+            lastAction = "Save Failed!";
+            lastActionTime = System.currentTimeMillis();
+            updateScoreDisplay();
+        }
+    }
+
+    public boolean loadGame() {
+        try {
+            GameState gameState = gameStateManager.loadGame();
+            if (gameState != null) {
+                restoreGameState(gameState);
+                
+                // Show confirmation
+                lastAction = "Game Loaded!";
+                lastActionTime = System.currentTimeMillis();
+                updateScoreDisplay();
+                repaint();
+                
+                return true;
+            } else {
+                lastAction = "No Save File Found";
+                lastActionTime = System.currentTimeMillis();
+                updateScoreDisplay();
+            }
+        } catch (IOException e) {
+            System.err.println("Failed to load game: " + e.getMessage());
+            lastAction = "Load Failed!";
+            lastActionTime = System.currentTimeMillis();
+            updateScoreDisplay();
+        }
+        return false;
+    }
+
+        private GameState createGameState() {
+        GameState state = new GameState();
+        state.setScore(score);
+        state.setTimeRemaining(timeRemaining);
+        state.setDifficulty(difficulty);
+        
+        // Save target positions
+        double[] targetX = new double[targets.length];
+        double[] targetY = new double[targets.length];
+        for (int i = 0; i < targets.length; i++) {
+            targetX[i] = targets[i].getX();
+            targetY[i] = targets[i].getY();
+        }
+        state.setTargetX(targetX);
+        state.setTargetY(targetY);
+        
+        // Save bomb positions
+        double[] bombX = new double[bombs.length];
+        double[] bombY = new double[bombs.length];
+        for (int i = 0; i < bombs.length; i++) {
+            bombX[i] = bombs[i].getX();
+            bombY[i] = bombs[i].getY();
+        }
+        state.setBombX(bombX);
+        state.setBombY(bombY);
+        
+        return state;
+    }
+
+        private void restoreGameState(GameState state) {
+        // Restore game progress
+        score = state.getScore();
+        timeRemaining = state.getTimeRemaining();
+        
+        // Restore target positions
+        double[] targetX = state.getTargetX();
+        double[] targetY = state.getTargetY();
+        for (int i = 0; i < targets.length && i < targetX.length; i++) {
+            targets[i].setPosition(targetX[i], targetY[i]);
+        }
+        
+        // Restore bomb positions
+        double[] bombX = state.getBombX();
+        double[] bombY = state.getBombY();
+        for (int i = 0; i < bombs.length && i < bombX.length; i++) {
+            bombs[i].setPosition(bombX[i], bombY[i]);
+        }
+        
+        updateScoreDisplay();
+        updateTimerDisplay();
+    }
+
+
+
     // Getter for score
     public int getScore() {
         return score;
@@ -203,6 +307,16 @@ public class AnimationsAndObjects extends JPanel {
                     case KeyEvent.VK_SPACE:
                         ballCalculations.launchBall();
                         repaint();
+                        break;
+                    case KeyEvent.VK_S:
+                        if (e.isControlDown()) { //Ctrl+S to save
+                            saveGame();
+                        }
+                        break;
+                    case KeyEvent.VK_L:
+                        if (e.isControlDown()) { //Ctrl+L to load
+                            loadGame();
+                        }
                         break;
                     default:
                         break;
