@@ -7,6 +7,8 @@ public class Targets {
     private double height;
     private boolean isCorrect = false;
     private String letter;
+    private boolean hit = false;
+    private String answerText = "";
 
     public Targets(double screenWidth, double targetY, double width, double height, String letter) {
         this.width = width;
@@ -15,24 +17,46 @@ public class Targets {
         this.y = targetY;
         this.letter = letter;
     }
-    //Getters
+
+    // Getters
     public double getX() {
         return x;
     }
+
     public double getY() {
         return y;
     }
+
     public double getWidth() {
         return width;
     }
+
     public double getHeight() {
         return height;
     }
+
     public boolean isCorrect() {
         return isCorrect;
     }
+
     public String getLetter() {
         return letter;
+    }
+
+    public void setHit(boolean hit) {
+        this.hit = hit;
+    }
+
+    public boolean isHit() {
+        return hit;
+    }
+
+    public void setAnswerText(String answerText) {
+        this.answerText = answerText;
+    }
+
+    public String getAnswerText() {
+        return answerText;
     }
 
     public boolean checkCollision(double ballX, double ballY, double ballRadius) {
