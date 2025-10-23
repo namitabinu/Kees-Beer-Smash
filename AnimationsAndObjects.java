@@ -42,10 +42,10 @@ public class AnimationsAndObjects extends JPanel {
         this.difficulty = difficulty;
         this.setPreferredSize(new Dimension(800, 600));
         this.setLayout(new BorderLayout()); // changed layout to BorderLayout
-        backgroundImage = new ImageIcon("Pub_Interior_Image.jpeg").getImage();
-        slingshotImage = new ImageIcon("sling.png").getImage();
-        cupImage = new ImageIcon("beer.png").getImage();
-        bombImage = new ImageIcon("bomb.png").getImage();
+        backgroundImage = new ImageIcon("Pictures/Pub_Interior_Image.jpeg").getImage();
+        slingshotImage = new ImageIcon("Pictures/sling.png").getImage();
+        cupImage = new ImageIcon("Pictures/beer.png").getImage();
+        bombImage = new ImageIcon("Pictures/bomb.png").getImage();
         setupLabels();
         setupKeyControls();
         initializeTimer();
