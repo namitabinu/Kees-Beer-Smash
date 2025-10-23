@@ -1,6 +1,9 @@
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import javax.swing.*;
+import javax.swing.Timer;
 
 /**
  * This class handles all animations and drawings of objects in the game.
@@ -11,26 +14,179 @@ public class AnimationsAndObjects extends JPanel {
     private Image backgroundImage;
     private Targets[] targets;
     private Targets[] bombs;
-    private int platformWidth = 500;
+    // private int platformWidth = 500;
     private int platformHeight = 100;
-    private Color platformColor = Color.decode("#FF0000");
+    // private Color platformColor = Color.decode("#FF0000");
     private Image slingshotImage;
     private Image cupImage;
     private Image bombImage;
 
+    // fields for score and timer
+    private JLabel timerLabel;
+    private JLabel scoreLabel;
+    private int score = 0;
+    private String lastAction = "";
+    private long lastActionTime = 0;
+    private int timeRemaining;
+    private Timer gameTimer;
+    private String difficulty;
+
     /**
      * A constructor to initialize the panel and load the images and background.
      */
-    public AnimationsAndObjects(BallCalculations ballCalculations, Targets[] targets, Targets[] bombs) {
+    public AnimationsAndObjects(BallCalculations ballCalculations, Targets[] targets, Targets[] bombs,
+            String difficulty) {
         this.ballCalculations = ballCalculations;
         this.targets = targets;
         this.bombs = bombs;
+        this.difficulty = difficulty;
         this.setPreferredSize(new Dimension(800, 600));
+        this.setLayout(new BorderLayout()); // changed layout to BorderLayout
         backgroundImage = new ImageIcon("Pub_Interior_Image.jpeg").getImage();
         slingshotImage = new ImageIcon("sling.png").getImage();
         cupImage = new ImageIcon("beer.png").getImage();
         bombImage = new ImageIcon("bomb.png").getImage();
+        setupLabels();
         setupKeyControls();
+        initializeTimer();
+        startTimer();
+    }
+
+    private void initializeTimer() {
+        // Set initial time based on difficulty
+        switch (difficulty.toLowerCase()) {
+            case "easy":
+                timeRemaining = 90; // 90 seconds
+                break;
+            case "medium":
+                timeRemaining = 60; // 60 seconds
+                break;
+            case "hard":
+                timeRemaining = 30; // 30 seconds
+                break;
+            default:
+                timeRemaining = 60; // Default to medium
+        }
+    }
+
+    private void setupLabels() {
+        // Create a panel to hold both labels
+        JPanel topPanel = new JPanel();
+        topPanel.setLayout(new BorderLayout());
+        topPanel.setBackground(new Color(0, 0, 0, 180)); // Semi-transparent black
+        topPanel.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
+
+        // Timer label at the top
+        timerLabel = new JLabel("", JLabel.CENTER);
+        timerLabel.setFont(new Font("Arial", Font.BOLD, 28));
+        timerLabel.setForeground(Color.WHITE);
+        timerLabel.setOpaque(false);
+
+        // Score label below timer
+        scoreLabel = new JLabel("Score: 0", JLabel.CENTER);
+        scoreLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        scoreLabel.setForeground(Color.WHITE);
+        scoreLabel.setOpaque(false);
+
+        topPanel.add(timerLabel, BorderLayout.NORTH);
+        topPanel.add(scoreLabel, BorderLayout.SOUTH);
+
+        // Add to top of main panel
+        this.add(topPanel, BorderLayout.NORTH);
+        updateTimerDisplay();
+    }
+
+    private void startTimer() {
+        gameTimer = new Timer(1000, new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                timeRemaining--;
+                updateTimerDisplay();
+
+                // Check if time is up
+                if (timeRemaining <= 0) {
+                    gameTimer.stop();
+                    timeUp();
+                }
+            }
+        });
+        gameTimer.start();
+    }
+
+    private void updateTimerDisplay() {
+        String timeText = "Time: " + timeRemaining + "s";
+
+        // Change color when time is running low
+        if (timeRemaining <= 10) {
+            timerLabel.setForeground(Color.RED);
+        } else if (timeRemaining <= 30) {
+            timerLabel.setForeground(Color.YELLOW);
+        } else {
+            timerLabel.setForeground(Color.WHITE);
+        }
+
+        timerLabel.setText(timeText);
+    }
+
+    // Method to call when a target is hit
+    public void targetHit() {
+        score += 10;
+        lastAction = "Score! You get 10 points";
+        lastActionTime = System.currentTimeMillis();
+        updateScoreDisplay();
+    }
+
+    // Method to call when a bomb is hit
+    public void bombHit() {
+        score -= 5;
+        lastAction = "Oh no! You lose 5 points";
+        lastActionTime = System.currentTimeMillis();
+        updateScoreDisplay();
+    }
+
+    // Method to update the score display
+    private void updateScoreDisplay() {
+        String displayText = "Score: " + score;
+
+        // Show temporary message for 2 seconds after hit
+        if (!lastAction.isEmpty() && (System.currentTimeMillis() - lastActionTime) < 2000) {
+            displayText = lastAction + " | Score: " + score;
+        }
+
+        scoreLabel.setText(displayText);
+    }
+
+    private void timeUp() {
+        // Game over logic
+        timerLabel.setText("TIME UP!");
+        timerLabel.setForeground(Color.RED);
+        scoreLabel.setText("Final Score: " + score);
+
+        // Show game over dialog
+        SwingUtilities.invokeLater(() -> {
+            JOptionPane.showMessageDialog(this,
+                    "Time's up! Final Score: " + score,
+                    "Game Over",
+                    JOptionPane.INFORMATION_MESSAGE);
+        });
+    }
+
+    // Getter for score
+    public int getScore() {
+        return score;
+    }
+
+    // Getter for time remaining
+    public int getTimeRemaining() {
+        return timeRemaining;
+    }
+
+    // Method to stop timer
+    public void stopTimer() {
+        if (gameTimer != null) {
+            gameTimer.stop();
+        }
     }
 
     private void setupKeyControls() {
@@ -69,20 +225,43 @@ public class AnimationsAndObjects extends JPanel {
             g.fillRect(0, 0, getWidth(), getHeight());
         }
         ballCalculations.setScreenSize(getWidth(), getHeight()); // Sets screen size
-        drawPlatform(g); // Draws the platform
         drawSlingshot(g); // Draws the slingshot
         drawBall(g); // Draws the ball
         drawTrajectory(g); // Draws the trajectory
         drawTargets(g); // Draws the targets
         drawBombs(g); // Draws the bombs
+        //drawCollisionBounds(g); // debugging the collisions
     }
 
-    private void drawPlatform(Graphics g) {
-        g.setColor(platformColor); // Sets the platform color to brown
-        int platformX = 50;
-        int platformY = getHeight() - 250; // Positions the platform near the bottom
-        g.fillRect(platformX, platformY, platformWidth, platformHeight);
-    }
+    /* private void drawCollisionBounds(Graphics g) {
+        g.setColor(Color.YELLOW);
+        // Draw target collision bounds
+        for (Targets target : targets) {
+            int x = (int) target.getX();
+            int y = (int) target.getY();
+            int width = (int) target.getWidth();
+            int height = (int) target.getHeight();
+            g.drawRect(x, y, width, height);
+        }
+
+        // Draw bomb collision bounds
+        g.setColor(Color.ORANGE);
+        for (Targets bomb : bombs) {
+            int x = (int) bomb.getX();
+            int y = (int) bomb.getY();
+            int width = (int) bomb.getWidth();
+            int height = (int) bomb.getHeight();
+            g.drawRect(x, y, width, height);
+        }
+
+        // Draw ball collision circle
+        g.setColor(Color.GREEN);
+        double ballX = ballCalculations.getX();
+        double ballY = ballCalculations.getY();
+        double radius = ballCalculations.getRadius();
+        g.drawOval((int) (ballX - radius), (int) (ballY - radius),
+                (int) (radius * 2), (int) (radius * 2));
+    } */
 
     private void drawSlingshot(Graphics g) {
         if (slingshotImage != null) {
@@ -96,7 +275,7 @@ public class AnimationsAndObjects extends JPanel {
 
     private void drawSlingshotBand(Graphics g, int slingshotX, int slingshotY) {
         Graphics2D g2d = (Graphics2D) g;
-        g2d.setColor(Color.BLACK);
+        g2d.setColor(Color.decode("#8A3324"));
         g2d.setStroke(new BasicStroke(18)); // thickness of the band
         double targetX = ballCalculations.isLaunched()
                 ? ballCalculations.getLaunchX()
@@ -138,7 +317,6 @@ public class AnimationsAndObjects extends JPanel {
                 g.setColor(Color.RED);
                 g.fillRect(x, y, width, height);
             }
-            // drawLetter(g, target, x, y, width, height);
         }
     }
 
@@ -160,21 +338,6 @@ public class AnimationsAndObjects extends JPanel {
             }
         }
     }
-
-    /*
-     * private void drawLetter(Graphics g, Targets target, int x, int y, int width,
-     * int height) {
-     * g.setColor(Color.WHITE);
-     * g.setFont(new Font("Arial", Font.BOLD, 40));
-     * FontMetrics fm = g.getFontMetrics();
-     * String letter = target.getLetter();
-     * int textWidth = fm.stringWidth(letter);
-     * int textHeight = fm.getAscent();
-     * int textX = x + (width - textWidth) / 2;
-     * int textY = y + (height + textHeight) / 2 - 10;
-     * g.drawString(letter, textX, textY);
-     * }
-     */
 
     private void drawTrajectory(Graphics g) {
         if (ballCalculations.showTrajectory) {
