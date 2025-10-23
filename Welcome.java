@@ -15,7 +15,7 @@ public class Welcome extends JFrame {
         layeredPane.setPreferredSize(new Dimension(screenWidth, screenHeight));
 
         // Background panel
-        ImageIcon originalIcon = new ImageIcon("welcome_page.png");
+        ImageIcon originalIcon = new ImageIcon("Pictures/welcome_page.png");
         JPanel backgroundPanel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {

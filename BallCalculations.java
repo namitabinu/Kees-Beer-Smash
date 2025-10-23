@@ -28,6 +28,7 @@ public class BallCalculations {
     public boolean showTrajectory;
     private Targets[] targets;
     private Targets[] bombs;
+    private boolean collided = false;
     //private boolean isReset = false;
 
     // Constructor to initialize the ball's model
@@ -115,6 +116,7 @@ public class BallCalculations {
                 if (target.checkCollision(x, y, radius) && !target.isHit()) {
                     panel.targetHit();
                     target.setHit(true);
+                    collided = true;
                     System.out.println("Target hit! +10 points");
                 }
             }
@@ -126,6 +128,7 @@ public class BallCalculations {
                 if (bomb.checkCollision(x, y, radius) && !bomb.isHit()) {
                     panel.bombHit();
                     bomb.setHit(true);
+                    collided = true;
                     System.out.println("Bomb hit! -5 points");
                 }
             }
@@ -202,7 +205,7 @@ public class BallCalculations {
         boolean tooSlow = Math.abs(velocityX) < 1.0 && Math.abs(velocityY) < 1.0
                 && isLaunched;
         boolean hitGround = y + radius >= screenHeight && isLaunched;
-        return tooSlow || hitGround;
+        return tooSlow || hitGround || collided;
     }
 
     public void resetBall() {
@@ -218,12 +221,14 @@ public class BallCalculations {
         if (targets != null) {
             for (Targets target : targets) {
                 target.setHit(false);
+                collided = false;
                 System.out.println("Reset target: " + target.getLetter()); // Debug
             }
         }
         if (bombs != null) {
             for (Targets bomb : bombs) {
                 bomb.setHit(false);
+                collided = false;
                 System.out.println("Reset bomb"); // Debug
             }
         }
