@@ -3,7 +3,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import javax.swing.*;
-import javax.swing.Timer;
 
 /**
  * This class handles all animations and drawings of objects in the game.
@@ -14,9 +13,7 @@ public class AnimationsAndObjects extends JPanel {
     private Image backgroundImage;
     private Targets[] targets;
     private Targets[] bombs;
-    // private int platformWidth = 500;
     private int platformHeight = 100;
-    // private Color platformColor = Color.decode("#FF0000");
     private Image slingshotImage;
     private Image cupImage;
     private Image bombImage;
@@ -91,7 +88,6 @@ public class AnimationsAndObjects extends JPanel {
         topPanel.add(timerLabel, BorderLayout.NORTH);
         topPanel.add(scoreLabel, BorderLayout.SOUTH);
 
-        // Add to top of main panel
         this.add(topPanel, BorderLayout.NORTH);
         updateTimerDisplay();
     }
@@ -230,38 +226,8 @@ public class AnimationsAndObjects extends JPanel {
         drawTrajectory(g); // Draws the trajectory
         drawTargets(g); // Draws the targets
         drawBombs(g); // Draws the bombs
-        //drawCollisionBounds(g); // debugging the collisions
+        //drawDebugInfo(g); // debug
     }
-
-    /* private void drawCollisionBounds(Graphics g) {
-        g.setColor(Color.YELLOW);
-        // Draw target collision bounds
-        for (Targets target : targets) {
-            int x = (int) target.getX();
-            int y = (int) target.getY();
-            int width = (int) target.getWidth();
-            int height = (int) target.getHeight();
-            g.drawRect(x, y, width, height);
-        }
-
-        // Draw bomb collision bounds
-        g.setColor(Color.ORANGE);
-        for (Targets bomb : bombs) {
-            int x = (int) bomb.getX();
-            int y = (int) bomb.getY();
-            int width = (int) bomb.getWidth();
-            int height = (int) bomb.getHeight();
-            g.drawRect(x, y, width, height);
-        }
-
-        // Draw ball collision circle
-        g.setColor(Color.GREEN);
-        double ballX = ballCalculations.getX();
-        double ballY = ballCalculations.getY();
-        double radius = ballCalculations.getRadius();
-        g.drawOval((int) (ballX - radius), (int) (ballY - radius),
-                (int) (radius * 2), (int) (radius * 2));
-    } */
 
     private void drawSlingshot(Graphics g) {
         if (slingshotImage != null) {
