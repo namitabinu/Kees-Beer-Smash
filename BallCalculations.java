@@ -28,7 +28,7 @@ public class BallCalculations {
     public boolean showTrajectory;
     private Targets[] targets;
     private Targets[] bombs;
-    private boolean isReset = false;
+    //private boolean isReset = false;
 
     // Constructor to initialize the ball's model
     /**
