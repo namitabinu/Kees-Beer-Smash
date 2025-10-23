@@ -89,6 +89,30 @@ public class BallCalculations {
         return showTrajectory;
     }
 
+    // Add these methods to your BallCalculations class
+    public double getVelocityX() {
+        return velocityX;
+    }
+
+    public double getVelocityY() {
+        return velocityY;
+    }
+
+    public void setPosition(double x, double y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    public void setVelocity(double velocityX, double velocityY) {
+        this.velocityX = velocityX;
+        this.velocityY = velocityY;
+    }
+
+    public void setLaunched(boolean launched) {
+        this.isLaunched = launched;
+        this.showTrajectory = !launched;
+    }
+
     public void updatePosition() {
         if (!isLaunched) {
             return;
@@ -118,7 +142,7 @@ public class BallCalculations {
                 if (target.checkCollision(x, y, radius) && !target.isHit()) {
                     panel.targetHit();
                     target.setHit(true);
-                     collided = true;
+                    collided = true;
                     System.out.println("Target hit! +10 points");
                 }
             }
@@ -130,7 +154,7 @@ public class BallCalculations {
                 if (bomb.checkCollision(x, y, radius) && !bomb.isHit()) {
                     panel.bombHit();
                     bomb.setHit(true);
-                     collided = true;
+                    collided = true;
                     System.out.println("Bomb hit! -5 points");
                 }
             }
