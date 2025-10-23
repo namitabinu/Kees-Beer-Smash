@@ -3,7 +3,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import javax.swing.*;
-import javax.swing.Timer;
 
 /**
  * This class handles all animations and drawings of objects in the game.

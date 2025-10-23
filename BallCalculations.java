@@ -1,5 +1,6 @@
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * This is the code for all the calculations regarding the following:
@@ -29,6 +30,7 @@ public class BallCalculations {
     private Targets[] targets;
     private Targets[] bombs;
     private boolean collided = false;
+    private Random random = new Random();
 
     // Constructor to initialize the ball's model
     /**
@@ -110,6 +112,7 @@ public class BallCalculations {
 
     public void checkCollisions(AnimationsAndObjects panel) {
         // Check target collisions
+
         if (targets != null) {
             for (Targets target : targets) {
                 if (target.checkCollision(x, y, radius) && !target.isHit()) {
@@ -216,23 +219,96 @@ public class BallCalculations {
         this.showTrajectory = true;
         this.trajectoryPoints.clear();
 
+        randomizeTargetsAndBombs();
+
         // Resets hit status of ALL targets and bombs
         if (targets != null) {
             for (Targets target : targets) {
                 target.setHit(false);
-                collided = false;
-                System.out.println("Reset target: "); // Debug
             }
         }
         if (bombs != null) {
             for (Targets bomb : bombs) {
                 bomb.setHit(false);
-                collided = false;
-                System.out.println("Reset bomb"); // Debug
             }
         }
 
+        collided = false;
         calculateTrajectory();
+    }
+
+    // randomizes position of targets and bombs
+    private void randomizeTargetsAndBombs() {
+        if (screenWidth == 0 || screenHeight == 0) {
+            System.out.println("Screen size not set yet, cannot randomize positions");
+            return;
+        }
+
+        // safe area (right half of screen, below top label area)
+        int labelAreaHeight = 100;
+        int minX = screenWidth / 2;
+        int maxX = screenWidth - 200;
+        int minY = labelAreaHeight + 50;
+        int maxY = screenHeight - 400;
+
+        // ALL objects that will be on screen (targets and bombs)
+        java.util.List<Targets> allScreenObjects = new ArrayList<>();
+        if (targets != null) {
+            allScreenObjects.addAll(java.util.Arrays.asList(targets));
+        }
+        if (bombs != null) {
+            allScreenObjects.addAll(java.util.Arrays.asList(bombs));
+        }
+
+        // Randomize all objects with collision checking against current positions
+        for (Targets currentObject : allScreenObjects) {
+            double newX, newY;
+            boolean positionValid;
+            int attempts = 0;
+            final int MAX_ATTEMPTS = 200;
+
+            do {
+                newX = minX + random.nextInt(maxX - minX);
+                newY = minY + random.nextInt(maxY - minY);
+
+                // Check if this new position overlaps with any other object on screen
+                positionValid = true;
+                for (Targets otherObject : allScreenObjects) {
+                    // Skip checking against itself
+                    if (otherObject == currentObject) {
+                        continue;
+                    }
+
+                    // Check if this new position would overlap with another object's current
+                    // position
+                    if (rectanglesOverlap(newX, newY, currentObject.getWidth(), currentObject.getHeight(),
+                            otherObject.getX(), otherObject.getY(), otherObject.getWidth(), otherObject.getHeight())) {
+                        positionValid = false;
+                        break;
+                    }
+                }
+
+                attempts++;
+                if (attempts > MAX_ATTEMPTS) {
+                    System.out.println("Warning: Could not find non-overlapping position for object");
+                    // Use edge position as fallback
+                    newX = maxX - currentObject.getWidth() - 10;
+                    newY = maxY - currentObject.getHeight() - 10;
+                    break;
+                }
+
+            } while (!positionValid);
+
+            // Set the new position
+            currentObject.setPosition(newX, newY);
+            System.out.println("Object moved to: (" + newX + ", " + newY + ")");
+        }
+    }
+
+    // Helper method to check rectangle overlap
+    private boolean rectanglesOverlap(double x1, double y1, double w1, double h1,
+            double x2, double y2, double w2, double h2) {
+        return x1 < x2 + w2 && x1 + w1 > x2 && y1 < y2 + h2 && y1 + h1 > y2;
     }
 
     public void checkBoundaries() {

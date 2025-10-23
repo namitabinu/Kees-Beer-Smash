@@ -1,5 +1,3 @@
-
-//import java.awt.*;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.*;
@@ -31,19 +29,17 @@ public class Main_two {
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int screenWidth = (int) screenSize.getWidth();
-        // Create QuestionService
-        //QuestionService questionService = new QuestionService();
 
         Targets[] bombs = new Targets[3];
-        bombs[0] = new Targets(screenWidth - 400, 400, 100, 110, "BOMB"); // Top-middle
-        bombs[1] = new Targets(screenWidth - 600, 600, 100, 110, "BOMB"); // Middle-left
-        bombs[2] = new Targets(screenWidth - 200, 200, 100, 110, "BOMB"); // Bottom-right
+        bombs[0] = new Targets(screenWidth - 400, 400, 100, 110);
+        bombs[1] = new Targets(screenWidth - 600, 600, 100, 110);
+        bombs[2] = new Targets(screenWidth - 200, 200, 100, 110);
 
         Targets[] targets = new Targets[4];
-        targets[0] = new Targets(screenWidth, 700, 180, 230, "D");
-        targets[1] = new Targets(screenWidth - 250, 500, 180, 230, "C");
-        targets[2] = new Targets(screenWidth, 300, 180, 230, "B");
-        targets[3] = new Targets(screenWidth - 250, 100, 180, 230, "A");
+        targets[0] = new Targets(screenWidth, 700, 180, 230);
+        targets[1] = new Targets(screenWidth - 250, 500, 180, 230);
+        targets[2] = new Targets(screenWidth, 300, 180, 230);
+        targets[3] = new Targets(screenWidth - 250, 100, 180, 230);
         BallCalculations ballCalculations = new BallCalculations(ballX, 530, 0, 0, ballRadius,
                 targets, bombs);
         AnimationsAndObjects panel = new AnimationsAndObjects(ballCalculations, targets, bombs, difficulty);

@@ -6,16 +6,20 @@ public class Targets {
     private double width;
     private double height;
     private boolean isCorrect = false;
-    private String letter;
     private boolean hit = false;
-    //private String answerText = "";
 
-    public Targets(double screenWidth, double targetY, double width, double height, String letter) {
+    public Targets(double screenWidth, double targetY, double width, double height) {
         this.width = width;
         this.height = height;
         this.x = screenWidth - width - 250;
         this.y = targetY;
-        this.letter = letter;
+    }
+
+    // Update position
+    public void setPosition(double newX, double newY) {
+        this.x = newX;
+        this.y = newY;
+        System.out.println("Target position set to: (" + newX + ", " + newY + ")");
     }
 
     // Getters
@@ -39,10 +43,6 @@ public class Targets {
         return isCorrect;
     }
 
-    public String getLetter() {
-        return letter;
-    }
-
     public void setHit(boolean hit) {
         this.hit = hit;
     }
@@ -50,14 +50,6 @@ public class Targets {
     public boolean isHit() {
         return hit;
     }
-
-    /* public void setAnswerText(String answerText) {
-        this.answerText = answerText;
-    }
-
-    public String getAnswerText() {
-        return answerText;
-    } */
 
     public boolean checkCollision(double ballX, double ballY, double ballRadius) {
         double closestX = Math.max(x, Math.min(ballX, x + width));
