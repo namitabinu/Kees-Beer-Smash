@@ -118,7 +118,7 @@ public class BallCalculations {
                 if (target.checkCollision(x, y, radius) && !target.isHit()) {
                     panel.targetHit();
                     target.setHit(true);
-                    collided = true;
+                     collided = true;
                     System.out.println("Target hit! +10 points");
                 }
             }
@@ -130,7 +130,7 @@ public class BallCalculations {
                 if (bomb.checkCollision(x, y, radius) && !bomb.isHit()) {
                     panel.bombHit();
                     bomb.setHit(true);
-                    collided = true;
+                     collided = true;
                     System.out.println("Bomb hit! -5 points");
                 }
             }

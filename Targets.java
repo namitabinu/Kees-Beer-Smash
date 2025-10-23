@@ -15,7 +15,7 @@ public class Targets {
         this.y = targetY;
     }
 
-    // NEW METHOD: Update position
+    // Update position
     public void setPosition(double newX, double newY) {
         this.x = newX;
         this.y = newY;

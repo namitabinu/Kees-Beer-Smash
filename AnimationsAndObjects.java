@@ -226,7 +226,6 @@ public class AnimationsAndObjects extends JPanel {
         drawTrajectory(g); // Draws the trajectory
         drawTargets(g); // Draws the targets
         drawBombs(g); // Draws the bombs
-        //drawDebugInfo(g); // debug
     }
 
     private void drawSlingshot(Graphics g) {
