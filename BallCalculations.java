@@ -8,7 +8,6 @@ import java.util.Random;
  * 2. The calculations of the ball's trajectory.
  * 3. The calculations of the ball's interaction with the targets and other
  * objects.
- * 4. The calculation of the placement of the targets.
  * 
  */
 public class BallCalculations {
@@ -406,4 +405,5 @@ public class BallCalculations {
             velocityY = 0; // Stops the ball from bouncing (maybe change later)
         }
     }
+
 }
