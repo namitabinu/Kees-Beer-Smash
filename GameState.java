@@ -1,6 +1,15 @@
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+/**
+ * Represents the complete state of the game for serialization and
+ * deserialization.
+ * Stores all the nexessary game data to be saved and loaded from a json file
+ * 
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
+// ignores any unrecognized JSON fields during deserialization,
+// preventing errors when loading files form different game versions or if the
+// class structure evolves.
 public class GameState {
     private double[] targetX;
     private double[] targetY;
@@ -9,8 +18,6 @@ public class GameState {
     private int score;
     private String difficulty;
     private int timeRemaining;
-
-    // ADD THESE: Ball state properties
     private double ballX;
     private double ballY;
     private double ballVelocityX;
@@ -78,7 +85,6 @@ public class GameState {
         this.difficulty = difficulty;
     }
 
-    // Getters and setters for ball state
     public double getBallX() {
         return ballX;
     }

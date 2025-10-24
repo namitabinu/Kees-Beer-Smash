@@ -1,5 +1,6 @@
-import java.awt.*;
-
+/** Represents a target object in the game, either a beer mug or bomb.
+ * 
+ */
 public class Targets {
     private double x;
     private double y;
@@ -8,6 +9,13 @@ public class Targets {
     private boolean isCorrect = false;
     private boolean hit = false;
 
+    /** Constructs a target object with specified positions and dimensions.
+     * 
+     * @param screenWidth width of game screen
+     * @param targetY initial y-coordinate of the target
+     * @param width width of target object
+     * @param height height of target object
+     */
     public Targets(double screenWidth, double targetY, double width, double height) {
         this.width = width;
         this.height = height;
@@ -15,7 +23,11 @@ public class Targets {
         this.y = targetY;
     }
 
-    // Update position
+    /** Updates the position of the target to the specified coordinates.
+     * 
+     * @param newX new x-coordinate position
+     * @param newY new y-coordinate position
+     */
     public void setPosition(double newX, double newY) {
         this.x = newX;
         this.y = newY;
@@ -51,6 +63,13 @@ public class Targets {
         return hit;
     }
 
+    /** Checks for collision between this target and the ball.
+     * 
+     * @param ballX x-coordinate of the ball's center
+     * @param ballY y-coordinate of the ball's center
+     * @param ballRadius radius of ball
+     * @return true if ball collides with target, false otherwise
+     */
     public boolean checkCollision(double ballX, double ballY, double ballRadius) {
         double closestX = Math.max(x, Math.min(ballX, x + width));
         double closestY = Math.max(y, Math.min(ballY, y + height));

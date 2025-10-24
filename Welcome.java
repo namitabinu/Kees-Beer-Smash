@@ -1,8 +1,14 @@
 import java.awt.*;
 import javax.swing.*;
 
+/** Represents the initial game screen where player can choose difficulty.
+ * 
+ */
 public class Welcome extends JFrame {
 
+    /** Constructor which adds background and difficulty level selection buttons.
+     * Sets up the UI components for starting the game.
+     */
     public Welcome() {
         setTitle("Kees' Beer Smash");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -85,7 +91,7 @@ public class Welcome extends JFrame {
 
     private void startGame(String difficulty) {
         this.dispose();
-        Main_two.startGame(difficulty);
+        Main.startGame(difficulty);
     }
 
     public static void main(String[] args) {
