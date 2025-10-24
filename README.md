@@ -2,6 +2,7 @@
 
 Beer Smash is an interactive physics-based game where players launch a ball to hit beer mug targets while avoiding bombs. 
 The game features realistic ball physics, trajectory prediction, and difficulty levels.
+Link to Repository - https://github.com/namitabinu/Kees-Beer-Smash.git
 
 ## Overview
 
