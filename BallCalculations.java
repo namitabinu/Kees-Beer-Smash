@@ -55,7 +55,7 @@ public class BallCalculations {
         this.trajectoryPoints = new ArrayList<>();
         this.showTrajectory = true;
     }
-
+    
     public double getX() {
         return x;
     }
