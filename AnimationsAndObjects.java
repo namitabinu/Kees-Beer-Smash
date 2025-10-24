@@ -1,11 +1,7 @@
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import javax.swing.*;
-import java.io.File;
 import java.io.IOException;
+import javax.swing.*;
 
 /**
  * This class handles all animations and drawings of objects in the game.
@@ -20,20 +16,19 @@ public class AnimationsAndObjects extends JPanel {
     private Image slingshotImage;
     private Image cupImage;
     private Image bombImage;
-
-    // fields for score and timer
     private JLabel timerLabel;
     private JLabel scoreLabel;
-    private int score = 0;
-    private String lastAction = "";
-    private long lastActionTime = 0;
-    private int timeRemaining;
-    private Timer gameTimer;
+    private TimerAndScore gameTimerAndScore;
     private String difficulty;
     private GameStateManager gameStateManager;
 
     /**
-     * A constructor to initialize the panel and load the images and background.
+     * Constructor to initialize the panel, load images and background.
+     * 
+     * @param ballCalculations Object for ball calculations
+     * @param targets          Array of target objects
+     * @param bombs            Array of bomb objects
+     * @param difficulty       Stores the game difficulty level
      */
     public AnimationsAndObjects(BallCalculations ballCalculations, Targets[] targets,
             Targets[] bombs, String difficulty) {
@@ -44,31 +39,16 @@ public class AnimationsAndObjects extends JPanel {
         this.setPreferredSize(new Dimension(800, 600));
         this.setLayout(new BorderLayout()); // changed layout to BorderLayout
         this.gameStateManager = new GameStateManager();
+        this.gameTimerAndScore = new TimerAndScore(difficulty, this::timeUp, this::updateDisplay);
+
         backgroundImage = new ImageIcon("Pictures/Pub_Interior_Image.jpeg").getImage();
         slingshotImage = new ImageIcon("Pictures/sling.png").getImage();
         cupImage = new ImageIcon("Pictures/beer.png").getImage();
         bombImage = new ImageIcon("Pictures/bomb.png").getImage();
+
         setupLabels();
         setupKeyControls();
-        initializeTimer();
         startTimer();
-    }
-
-    private void initializeTimer() {
-        // Set initial time based on difficulty
-        switch (difficulty.toLowerCase()) {
-            case "easy":
-                timeRemaining = 90; // 90 seconds
-                break;
-            case "medium":
-                timeRemaining = 60; // 60 seconds
-                break;
-            case "hard":
-                timeRemaining = 30; // 30 seconds
-                break;
-            default:
-                timeRemaining = 60; // Default to medium
-        }
     }
 
     private void setupLabels() {
@@ -94,103 +74,83 @@ public class AnimationsAndObjects extends JPanel {
         topPanel.add(scoreLabel, BorderLayout.SOUTH);
 
         this.add(topPanel, BorderLayout.NORTH);
-        updateTimerDisplay();
+        updateDisplay();
     }
 
     private void startTimer() {
-        gameTimer = new Timer(1000, new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                timeRemaining--;
-                updateTimerDisplay();
-
-                // Check if time is up
-                if (timeRemaining <= 0) {
-                    gameTimer.stop();
-                    timeUp();
-                }
-            }
-        });
-        gameTimer.start();
+        gameTimerAndScore.startTimer();
     }
 
-    private void updateTimerDisplay() {
-        String timeText = "Time: " + timeRemaining + "s";
-
-        // Change color when time is running low
-        if (timeRemaining <= 10) {
+    private void updateDisplay() {
+        // Update timer display with color coding
+        String timeText = gameTimerAndScore.getTimerText();
+        if (gameTimerAndScore.isTimeRunningLow()) {
             timerLabel.setForeground(Color.RED);
-        } else if (timeRemaining <= 30) {
+        } else if (gameTimerAndScore.isTimeWarning()) {
             timerLabel.setForeground(Color.YELLOW);
         } else {
             timerLabel.setForeground(Color.WHITE);
         }
-
         timerLabel.setText(timeText);
+
+        // Update score display
+        scoreLabel.setText(gameTimerAndScore.getDisplayText());
     }
 
-    // Method to call when a target is hit
+    /**
+     * Called when a target is hit.
+     */
     public void targetHit() {
-        score += 10;
-        lastAction = "Score! You get 10 points";
-        lastActionTime = System.currentTimeMillis();
-        updateScoreDisplay();
+        gameTimerAndScore.targetHit();
+        updateDisplay();
     }
 
-    // Method to call when a bomb is hit
+    /**
+     * Called when a bomb is hit.
+     */
     public void bombHit() {
-        score -= 5;
-        lastAction = "Oh no! You lose 5 points";
-        lastActionTime = System.currentTimeMillis();
-        updateScoreDisplay();
+        gameTimerAndScore.bombHit();
+        updateDisplay();
     }
 
-    // Method to update the score display
-    private void updateScoreDisplay() {
-        String displayText = "Score: " + score;
-
-        // Show temporary message for 2 seconds after hit
-        if (!lastAction.isEmpty() && (System.currentTimeMillis() - lastActionTime) < 2000) {
-            displayText = lastAction + " | Score: " + score;
-        }
-
-        scoreLabel.setText(displayText);
-    }
-
+    @SuppressWarnings("unused")
     private void timeUp() {
         // Game over logic
         timerLabel.setText("TIME UP!");
         timerLabel.setForeground(Color.RED);
-        scoreLabel.setText("Final Score: " + score);
+        scoreLabel.setText("Final Score: " + gameTimerAndScore.getScore());
 
         // Show game over dialog
         SwingUtilities.invokeLater(() -> {
             JOptionPane.showMessageDialog(this,
-                    "Time's up! Final Score: " + score,
+                    "Time's up! Final Score: " + gameTimerAndScore.getScore(),
                     "Game Over",
                     JOptionPane.INFORMATION_MESSAGE);
         });
     }
 
+    /**
+     * Saves the game state and throws error if unable to.
+     */
     public void saveGame() {
         try {
             GameState gameState = createGameState();
             gameStateManager.saveGame(gameState);
 
             // Show confirmation
-            lastAction = "Game Saved!";
-            lastActionTime = System.currentTimeMillis();
-            updateScoreDisplay();
+            gameTimerAndScore.setLastAction("Game Saved!");
+            updateDisplay();
 
         } catch (IOException e) {
             System.err.println("Failed to save game: " + e.getMessage());
-            lastAction = "Save Failed!";
-            lastActionTime = System.currentTimeMillis();
-            updateScoreDisplay();
+            gameTimerAndScore.setLastAction("Save Failed!");
+            updateDisplay();
         }
     }
 
+    /**
+     * Loads the game state and throws error if unable to.
+     */
     public boolean loadGame() {
         try {
             GameState gameState = gameStateManager.loadGame();
@@ -198,30 +158,27 @@ public class AnimationsAndObjects extends JPanel {
                 restoreGameState(gameState);
 
                 // Show confirmation
-                lastAction = "Game Loaded!";
-                lastActionTime = System.currentTimeMillis();
-                updateScoreDisplay();
+                gameTimerAndScore.setLastAction("Game Loaded!");
+                updateDisplay();
                 repaint();
 
                 return true;
             } else {
-                lastAction = "No Save File Found";
-                lastActionTime = System.currentTimeMillis();
-                updateScoreDisplay();
+                gameTimerAndScore.setLastAction("No Save File Found");
+                updateDisplay();
             }
         } catch (IOException e) {
             System.err.println("Failed to load game: " + e.getMessage());
-            lastAction = "Load Failed!";
-            lastActionTime = System.currentTimeMillis();
-            updateScoreDisplay();
+            gameTimerAndScore.setLastAction("Load Failed!");
+            updateDisplay();
         }
         return false;
     }
 
     private GameState createGameState() {
         GameState state = new GameState();
-        state.setScore(score);
-        state.setTimeRemaining(timeRemaining);
+        state.setScore(gameTimerAndScore.getScore());
+        state.setTimeRemaining(gameTimerAndScore.getTimeRemaining());
         state.setDifficulty(difficulty);
 
         // Save ball state
@@ -256,8 +213,8 @@ public class AnimationsAndObjects extends JPanel {
 
     private void restoreGameState(GameState state) {
         // Restore game progress
-        score = state.getScore();
-        timeRemaining = state.getTimeRemaining();
+        gameTimerAndScore.setScore(state.getScore());
+        gameTimerAndScore.setTimeRemaining(state.getTimeRemaining());
 
         // Restore ball state
         ballCalculations.setPosition(state.getBallX(), state.getBallY());
@@ -265,7 +222,7 @@ public class AnimationsAndObjects extends JPanel {
         ballCalculations.setLaunched(state.isBallLaunched());
 
         ballCalculations.showTrajectory = !state.isBallLaunched();
-        
+
         // Restore target positions
         double[] targetX = state.getTargetX();
         double[] targetY = state.getTargetY();
@@ -280,25 +237,22 @@ public class AnimationsAndObjects extends JPanel {
             bombs[i].setPosition(bombX[i], bombY[i]);
         }
 
-        updateScoreDisplay();
-        updateTimerDisplay();
+        updateDisplay();
     }
 
     // Getter for score
     public int getScore() {
-        return score;
+        return gameTimerAndScore.getScore();
     }
 
     // Getter for time remaining
     public int getTimeRemaining() {
-        return timeRemaining;
+        return gameTimerAndScore.getTimeRemaining();
     }
 
     // Method to stop timer
     public void stopTimer() {
-        if (gameTimer != null) {
-            gameTimer.stop();
-        }
+        gameTimerAndScore.stopTimer();
     }
 
     private void setupKeyControls() {
