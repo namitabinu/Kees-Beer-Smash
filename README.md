@@ -37,21 +37,21 @@ Easy (30 secs) - Fast-paced expert mode
 
 ### Executing program
 
-game-directory/
-├── Main.java
-├── Welcome.java
-├── AnimationsAndObjects.java
-├── BallCalculations.java
-├── Targets.java
-├── TimerAndScore.java
-├── GameState.java
-├── GameStateManager.java
-└── Pictures/
-    ├── welcome_page.png
-    ├── Pub_Interior_Image.jpeg
-    ├── sling.png
-    ├── beer.png
-    └── bomb.png
+* game-directory/
+* ├── Main.java
+* ├── Welcome.java
+* ├── AnimationsAndObjects.java
+* ├── BallCalculations.java
+* ├── Targets.java
+* ├── TimerAndScore.java
+* ├── GameState.java
+* ├── GameStateManager.java
+* └── Pictures/
+*     ├── welcome_page.png
+*     ├── Pub_Interior_Image.jpeg
+*     ├── sling.png
+*     ├── beer.png
+*     └── bomb.png
 
 Compile all the .java files and run the game
 
@@ -71,5 +71,5 @@ Compile all the .java files and run the game
 
 Contributors names
 
-ex. Namita Binu
-ex. Swarit Misra
+* Namita Binu
+* Swarit Misra
