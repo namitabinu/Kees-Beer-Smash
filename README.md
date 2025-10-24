@@ -5,30 +5,30 @@ The game features realistic ball physics, trajectory prediction, and difficulty 
 
 ## Overview
 
-Target Shooting - Hit beer cups to score points.
-Bombs - Avoid bombs that deduct your score!
-Difficulty - Choose between easy, medium and hard modes.
-Game State - Save your progress and resume whenever you wish to.
-Score Tracking - Displays your score in real-time with feedback.
-Timer - You must race against the clock to get the highest score possible!
-Trajectory - Predicts your ball's path before launch.
+* Target Shooting - Hit beer cups to score points.
+* Bombs - Avoid bombs that deduct your score!
+* Difficulty - Choose between easy, medium and hard modes.
+* Game State - Save your progress and resume whenever you wish to.
+* Score Tracking - Displays your score in real-time with feedback.
+* Timer - You must race against the clock to get the highest score possible!
+* Trajectory - Predicts your ball's path before launch.
 
 ## Game Controls
 
-UP Arrow - Pull ball back, increase power.
-DOWN Arrow - Release ball forward, decrease power.
-SPACE - Launch ball.
-Ctrl + S - Save game state.
-Ctrl + L - Load game state.
+* UP Arrow - Pull ball back, increase power.
+* DOWN Arrow - Release ball forward, decrease power.
+* SPACE - Launch ball.
+* Ctrl + S - Save game state.
+* Ctrl + L - Load game state.
 
-Scoring System:
-Hit a beer mug - +10 points
-Hit a bomb - -5 points
+**  Scoring System:
+* Hit a beer mug - +10 points
+* Hit a bomb - -5 points
 
-Levels:
-Easy (90 secs) - For begginers
-Medium (60 secs) - For a challenge
-Easy (30 secs) - Fast-paced expert mode
+**  Levels:
+* Easy (90 secs) - For begginers
+* Medium (60 secs) - For a challenge
+* Easy (30 secs) - Fast-paced expert mode
 
 ### Dependencies
 
